@@ -1,3 +1,6 @@
+using ClinicService.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace ClinicService
 {
     public class Program
@@ -5,10 +8,12 @@ namespace ClinicService
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            string connection = builder.Configuration.GetConnectionString("DefaultConnection");
             // Add services to the container.
 
             builder.Services.AddControllers();
+
+            builder.Services.AddDbContext<ClinicServiceDbContext>(options => options.UseSqlServer(connection));
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
