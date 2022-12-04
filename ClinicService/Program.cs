@@ -1,5 +1,7 @@
 using ClinicService.Data;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace ClinicService
 {
@@ -9,7 +11,18 @@ namespace ClinicService
         {
             var builder = WebApplication.CreateBuilder(args);
             string connection = builder.Configuration.GetConnectionString("DefaultConnection");
+
             // Add services to the container.
+
+            builder.WebHost.ConfigureKestrel(op =>
+            {
+                op.Listen(IPAddress.Any, 5001, lisop =>
+                {
+                    lisop.Protocols = HttpProtocols.Http2;
+                }); 
+            });
+
+            builder.Services.AddGrpc();
 
             builder.Services.AddControllers();
 
@@ -31,6 +44,13 @@ namespace ClinicService
 
 
             app.MapControllers();
+
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapGrpcService<ClinicService.Services.Imp.ClinicService>();
+            //});
+
+            app.MapGrpcService<ClinicService.Services.Imp.ClinicService>();
 
             app.Run();
         }

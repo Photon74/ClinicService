@@ -24,5 +24,10 @@ namespace ClinicService.Data
         [Column]
         [StringLength(255)]
         public string? Patronymic { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Id}\t{Surname}\t{FirstName}\t{Patronymic}\t{Document}";
+        }
     }
 }
